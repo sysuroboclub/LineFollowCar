@@ -31,8 +31,8 @@ SSD1306 oled(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, 0);
 Servo myservo;
 PS2X ps2x;
 
-String inputString = "";     // a String to hold incoming data
-bool stringComplete = false; // whether the string is complete
+String inputString="";
+String inputStringBuffer="";    // a String to hold incoming data
 
 /*  1:RC
     2:Serial
@@ -114,16 +114,16 @@ void RC(uint8_t dir, int spd)
 
 void serialEvent()
 {
-  inputString="";
   while (Serial.available())
   {
     char inChar = (char)Serial.read();
-    if (inChar == '\n')
+    if (inChar == '\n' || inChar == '\r')
     {
-      stringComplete = true;
+      inputString=inputStringBuffer;
+      inputStringBuffer="";
       break;
     }
-    inputString += inChar;
+    inputStringBuffer += inChar;
   }
 }
 void READ_ENCODER_L()
@@ -238,13 +238,11 @@ void loop()
 {
   oled.clear();
 
-  if (stringComplete)
-  {
-    oled.drawstring(0, 4, (char *)inputString.c_str());
-    stringComplete = false;
-    // Serial.println(inputString);
-    // inputString = "";
-  }
+
+  oled.drawstring(0, 4, (char *)inputString.c_str());
+  // Serial.println(inputString);
+  // inputString = "";
+
 
   if (runningMode == 1)
   {
