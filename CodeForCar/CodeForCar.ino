@@ -31,8 +31,8 @@ SSD1306 oled(OLED_MOSI, OLED_CLK, OLED_DC, OLED_RESET, 0);
 Servo myservo;
 PS2X ps2x;
 
-String inputString="";
-String inputStringBuffer="";    // a String to hold incoming data
+String inputString = "";
+String inputStringBuffer = ""; // a String to hold incoming data
 
 /*  1:RC
     2:Serial
@@ -119,8 +119,8 @@ void serialEvent()
     char inChar = (char)Serial.read();
     if (inChar == '\n' || inChar == '\r')
     {
-      inputString=inputStringBuffer;
-      inputStringBuffer="";
+      inputString = inputStringBuffer;
+      inputStringBuffer = "";
       break;
     }
     inputStringBuffer += inChar;
@@ -238,11 +238,9 @@ void loop()
 {
   oled.clear();
 
-
   oled.drawstring(0, 4, (char *)inputString.c_str());
   // Serial.println(inputString);
   // inputString = "";
-
 
   if (runningMode == 1)
   {
@@ -282,10 +280,24 @@ void loop()
   else if (runningMode == 2)
   {
     // int angle = inputString.c_str()[0];
-    int angle=inputString.toInt();
-    OLED_ShowNumber(60, 00, angle, 3);
+    uint8_t angle = 0;
+    if (inputString[0] == 'X')
+    {
+      oled.drawstring(0, 0, (char *)inputString.c_str());
+      angle = inputString.substring(1).toInt();
+      myservo.write(angle);
+    }
+    uint8_t triggerSpeed = 0;
+    if (inputString[0] == 'R')
+    {
+      oled.drawstring(15, 0, (char *)inputString.c_str());
+      triggerSpeed = inputString.substring(1).toInt();
+    }
+    OLED_ShowNumber(60, 20, angle, 3);
+    OLED_ShowNumber(40, 20, triggerSpeed, 3);
+
     // RC(angle, 255);
-    RC(angle, 0);
+    // RC(angle, 0);
   }
 
   int volt = (5.371 * analogRead(0));
