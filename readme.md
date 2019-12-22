@@ -12,5 +12,6 @@
 2. '''python3 xxx.py''' 
 
 ## How to use car firmware
-1. BURN IT.
-2. Spinning the right rear wheel to choose mode, press button to confirm.
+0. Open file in Code for car
+1. Simple version is maintaining, old version is deprecated. 
+2. BURN IT.  
